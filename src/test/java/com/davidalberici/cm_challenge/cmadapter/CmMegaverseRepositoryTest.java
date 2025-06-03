@@ -1,6 +1,9 @@
 package com.davidalberici.cm_challenge.cmadapter;
 
 import com.davidalberici.cm_challenge.Megaverse;
+import com.davidalberici.cm_challenge.element.Cometh;
+import com.davidalberici.cm_challenge.element.Polyanet;
+import com.davidalberici.cm_challenge.element.Soloon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +26,7 @@ class CmMegaverseRepositoryTest {
     }
 
     @Test
-    void getCurrentMegaverse() {
+    void getCurrentMegaverse_shouldKeepArraySize() {
         // arrange
         when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getMockCurrentMegaverseHttpResponse());
 
@@ -37,8 +40,49 @@ class CmMegaverseRepositoryTest {
         for (int i = 0; i < expectedColumns; i++) {
             assertEquals(expectedRows, m.getElements()[i].length);
         }
+    }
 
+    @Test
+    void getCurrentMegaverse_shouldMapPolyanets() {
+        // arrange
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getMockCurrentMegaverseHttpResponse());
 
+        // act
+        Megaverse m = repository.getCurrentMegaverse();
+
+        // assert
+        assertTrue(m.getElements()[0][0] instanceof Polyanet);
+        assertTrue(m.getElements()[2][1] instanceof Polyanet);
+    }
+
+    @Test
+    void getCurrentMegaverse_shouldMapSoloons() {
+        // arrange
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getMockCurrentMegaverseHttpResponse());
+
+        // act
+        Megaverse m = repository.getCurrentMegaverse();
+
+        // assert
+        assertTrue(m.getElements()[3][0] instanceof Soloon);
+        assertEquals(Soloon.Color.RED, ((Soloon) m.getElements()[3][0]).getColor());
+        assertTrue(m.getElements()[3][1] instanceof Soloon);
+        assertEquals(Soloon.Color.BLUE, ((Soloon) m.getElements()[3][1]).getColor());
+    }
+
+    @Test
+    void getCurrentMegaverse_shouldMapComeths() {
+        // arrange
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getMockCurrentMegaverseHttpResponse());
+
+        // act
+        Megaverse m = repository.getCurrentMegaverse();
+
+        // assert
+        assertTrue(m.getElements()[1][3] instanceof Cometh);
+        assertEquals(Cometh.Direction.UP, ((Cometh) m.getElements()[1][3]).getDirection());
+        assertTrue(m.getElements()[1][4] instanceof Cometh);
+        assertEquals(Cometh.Direction.LEFT, ((Cometh) m.getElements()[1][4]).getDirection());
     }
 
     private String getMockCurrentMegaverseHttpResponse() {
@@ -46,10 +90,10 @@ class CmMegaverseRepositoryTest {
                 {
                     "map":{"_id":"68272737eaa8c821866f2a9e",
                     "content":[
-                        [null,null,null,null,null,null,null,null],
-                        [null,{"type":1,"color":"red"},{"type":1,"color":"blue"},{"type":2,"direction":"up"},{"type":2,"direction":"left"},{"type":2,"direction":"down"},{"type":2,"direction":"right"},null],
-                        [null,null,null,null,null,null,null,null],
-                        [null,null,null,null,null,null,null,null],
+                        [{"type":0},null,null,null,null,null,null,null],
+                        [null,null,null,{"type":2,"direction":"up"},{"type":2,"direction":"left"},{"type":2,"direction":"down"},{"type":2,"direction":"right"},null],
+                        [null,{"type":0},null,null,null,null,null,null],
+                        [{"type":1,"color":"red"},{"type":1,"color":"blue"},{"type":1,"color":"purple"},{"type":1,"color":"white"},null,null,null,null],
                         [null,null,null,null,null,null,null,null],
                         [null,null,null,null,null,null,null,null]
                     ],
