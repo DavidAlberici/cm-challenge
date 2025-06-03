@@ -48,8 +48,9 @@ class CmMegaverseRepositoryTest {
         }
     }
 
-    @Test
-    void getCurrentMegaverse_shouldMapPolyanets() {
+    @ParameterizedTest
+    @MethodSource("provideExpectedElementsInCurrentMetaverse")
+    void getCurrentMegaverse_shouldMapAllElemetTypes(int row, int column, Element expectedElement) {
         // arrange
         when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getCurrentMegaverseHttpMockResponse());
 
@@ -57,38 +58,20 @@ class CmMegaverseRepositoryTest {
         Megaverse m = repository.getCurrentMegaverse();
 
         // assert
-        assertTrue(m.getElements()[0][0] instanceof Polyanet);
-        assertTrue(m.getElements()[2][1] instanceof Polyanet);
+        assertEquals(expectedElement, m.getElements()[row][column]);
     }
 
-    @Test
-    void getCurrentMegaverse_shouldMapSoloons() {
-        // arrange
-        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getCurrentMegaverseHttpMockResponse());
-
-        // act
-        Megaverse m = repository.getCurrentMegaverse();
-
-        // assert
-        assertTrue(m.getElements()[3][0] instanceof Soloon);
-        assertEquals(Soloon.Color.RED, ((Soloon) m.getElements()[3][0]).getColor());
-        assertTrue(m.getElements()[3][1] instanceof Soloon);
-        assertEquals(Soloon.Color.BLUE, ((Soloon) m.getElements()[3][1]).getColor());
-    }
-
-    @Test
-    void getCurrentMegaverse_shouldMapComeths() {
-        // arrange
-        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getCurrentMegaverseHttpMockResponse());
-
-        // act
-        Megaverse m = repository.getCurrentMegaverse();
-
-        // assert
-        assertTrue(m.getElements()[1][3] instanceof Cometh);
-        assertEquals(Cometh.Direction.UP, ((Cometh) m.getElements()[1][3]).getDirection());
-        assertTrue(m.getElements()[1][4] instanceof Cometh);
-        assertEquals(Cometh.Direction.LEFT, ((Cometh) m.getElements()[1][4]).getDirection());
+    private static Stream<Arguments> provideExpectedElementsInCurrentMetaverse() {
+        return Stream.of(
+                Arguments.of(0,0, new Polyanet()),
+                Arguments.of(2,1, new Polyanet()),
+                Arguments.of(3,0, new Soloon(Soloon.Color.RED)),
+                Arguments.of(3,1, new Soloon(Soloon.Color.BLUE)),
+                Arguments.of(1,3, new Cometh(Cometh.Direction.UP)),
+                Arguments.of(1,4, new Cometh(Cometh.Direction.LEFT)),
+                Arguments.of(1,0, null),
+                Arguments.of(2,0, null)
+        );
     }
 
     @Test
