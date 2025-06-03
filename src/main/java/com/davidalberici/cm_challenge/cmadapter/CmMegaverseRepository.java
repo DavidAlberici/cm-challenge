@@ -26,43 +26,69 @@ public class CmMegaverseRepository implements MegaverseRepository {
     @Override
     public Megaverse getCurrentMegaverse() {
         String rawResponse = httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId);
-        Element[][] matrix = mapResponseToElementArray(rawResponse);
+        Element[][] matrix = mapCurrentMegaverseResponseToElementArray(rawResponse);
         return new Megaverse(matrix);
     }
 
     @Override
     public Megaverse getGoalMegaverse() {
-        return null;
+        String rawResponse = httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId + "/goal");
+        Element[][] matrix = mapGoalMegaverseResponseToElementArray(rawResponse);
+        return new Megaverse(matrix);
     }
 
-    private Element[][] mapResponseToElementArray(String rawResponse) {
-        JsonNode root = null;   // { "map": { "content": [...], ...} }
+    private Element[][] mapGoalMegaverseResponseToElementArray(String rawResponse) {
+        JsonNode root = null;   // { "goal": [[],[],...] }
         try {
             root = objectMapper.readTree(rawResponse);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        JsonNode content = root.path("map").path("content");
-        checkContentNodeIsValid(content);
+        JsonNode goal = root.path("goal");
+        checkGoalMegaverseGoalNodeIsValid(goal);
 
         try {
-            CmElement[][] rawElementArray = objectMapper.treeToValue(content, CmElement[][].class);
-            return mapRawArrayToElementArray(rawElementArray);
+            CmGoalElement[][] rawElementArray = objectMapper.treeToValue(goal, CmGoalElement[][].class);
+            return mapCmGoalElementArrayToElementArray(rawElementArray);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private Element[][] mapRawArrayToElementArray(CmElement[][] rawElementArray) {
+    private void checkGoalMegaverseGoalNodeIsValid(JsonNode goal) {
+        if (!goal.isArray()) {
+            throw new IllegalArgumentException("'goal' is not an array");
+        }
+
+        int rows = goal.size();
+        if (rows == 0) {
+            throw new IllegalArgumentException("'goal' array is empty");
+        }
+
+        int cols = goal.get(0).size();
+        if (cols == 0) {
+            throw new IllegalArgumentException("'goal' array has rows, but they are empty");
+        }
+        for (int i = 1; i < rows; i++) {
+            if (!goal.get(i).isArray()) {
+                throw new IllegalArgumentException("Row " + i + " in 'goal' is not an array");
+            }
+            if (goal.get(i).size() != cols) {
+                throw new IllegalArgumentException("Inconsistent column count at row " + i);
+            }
+        }
+    }
+
+    private Element[][] mapCmGoalElementArrayToElementArray(CmGoalElement[][] rawElementArray) {
         int rows = rawElementArray.length;
         int cols = rawElementArray[0].length;
         Element[][] elements = new Element[rows][cols];
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                CmElement cell = rawElementArray[i][j];
+                CmGoalElement cell = rawElementArray[i][j];
                 if (cell != null) {
-                    elements[i][j] = mapRawArrrayCellToElement(cell, i, j);
+                    elements[i][j] = mapCmGoalElementToElement(cell, i, j);
                 }
             }
         }
@@ -70,7 +96,57 @@ public class CmMegaverseRepository implements MegaverseRepository {
         return elements;
     }
 
-    private static Element mapRawArrrayCellToElement(CmElement cell, int i, int j) {
+    private Element mapCmGoalElementToElement(CmGoalElement cell, int i, int j) {
+        return switch (cell) {
+            case SPACE -> null;
+            case POLYANET -> new Polyanet();
+            case UP_COMETH -> new Cometh(Cometh.Direction.UP);
+            case DOWN_COMETH ->  new Cometh(Cometh.Direction.DOWN);
+            case LEFT_COMETH ->  new Cometh(Cometh.Direction.LEFT);
+            case RIGHT_COMETH ->  new Cometh(Cometh.Direction.RIGHT);
+            case WHITE_SOLOON -> new Soloon(Soloon.Color.WHITE);
+            case BLUE_SOLOON -> new Soloon(Soloon.Color.BLUE);
+            case RED_SOLOON -> new Soloon(Soloon.Color.RED);
+            case PURPLE_SOLOON -> new Soloon(Soloon.Color.PURPLE);
+        };
+    }
+
+    private Element[][] mapCurrentMegaverseResponseToElementArray(String rawResponse) {
+        JsonNode root = null;   // { "map": { "content": [...], ...} }
+        try {
+            root = objectMapper.readTree(rawResponse);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        JsonNode content = root.path("map").path("content");
+        checkCurrentMegaverseContentNodeIsValid(content);
+
+        try {
+            CmCurrentElement[][] rawElementArray = objectMapper.treeToValue(content, CmCurrentElement[][].class);
+            return mapCmCurrentElementArrayToElementArray(rawElementArray);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Element[][] mapCmCurrentElementArrayToElementArray(CmCurrentElement[][] rawElementArray) {
+        int rows = rawElementArray.length;
+        int cols = rawElementArray[0].length;
+        Element[][] elements = new Element[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                CmCurrentElement cell = rawElementArray[i][j];
+                if (cell != null) {
+                    elements[i][j] = mapCmCurrentElementToElement(cell, i, j);
+                }
+            }
+        }
+
+        return elements;
+    }
+
+    private static Element mapCmCurrentElementToElement(CmCurrentElement cell, int i, int j) {
         int type = cell.type();
         return switch (type) {
             case 0 -> new Polyanet();
@@ -80,7 +156,7 @@ public class CmMegaverseRepository implements MegaverseRepository {
         };
     }
 
-    private static Soloon mapRawArrayCellToSoloon(CmElement cell, int i, int j) {
+    private static Soloon mapRawArrayCellToSoloon(CmCurrentElement cell, int i, int j) {
         Object rawColor = cell.color();
         if (rawColor == null) {
             throw new IllegalArgumentException("Missing 'color' for Soloon at (" + i + "," + j + ")");
@@ -94,7 +170,7 @@ public class CmMegaverseRepository implements MegaverseRepository {
         }
     }
 
-    private static Cometh mapRawArrayCellToCometh(CmElement cell, int i, int j) {
+    private static Cometh mapRawArrayCellToCometh(CmCurrentElement cell, int i, int j) {
         Object rawDir = cell.direction();
         if (rawDir == null) {
             throw new IllegalArgumentException("Missing 'direction' for Cometh at (" + i + "," + j + ")");
@@ -108,7 +184,7 @@ public class CmMegaverseRepository implements MegaverseRepository {
         }
     }
 
-    private void checkContentNodeIsValid(JsonNode content) {
+    private void checkCurrentMegaverseContentNodeIsValid(JsonNode content) {
         if (!content.isArray()) {
             throw new IllegalArgumentException("'content' is not an array");
         }

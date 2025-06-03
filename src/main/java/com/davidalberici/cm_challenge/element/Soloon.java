@@ -1,10 +1,10 @@
 package com.davidalberici.cm_challenge.element;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Setter
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Soloon extends Element {
     private Color color;
 

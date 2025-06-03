@@ -2,10 +2,16 @@ package com.davidalberici.cm_challenge.cmadapter;
 
 import com.davidalberici.cm_challenge.Megaverse;
 import com.davidalberici.cm_challenge.element.Cometh;
+import com.davidalberici.cm_challenge.element.Element;
 import com.davidalberici.cm_challenge.element.Polyanet;
 import com.davidalberici.cm_challenge.element.Soloon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -94,6 +100,106 @@ class CmMegaverseRepositoryTest {
         Exception e = assertThrows(Exception.class, () -> repository.getCurrentMegaverse());
 
         assertEquals("Inconsistent column count at row 1", e.getMessage());
+    }
+
+    @Test
+    void getGoalMegaverse_shouldKeepArraySize() {
+        // arrange
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId + "/goal")).thenReturn(getGoalMegaverseMockHttpResponse());
+
+        // act
+        Megaverse m = repository.getGoalMegaverse();
+
+        // assert
+        int expectedColumns = 3;
+        int expectedRows = 3;
+        assertEquals(expectedColumns, m.getElements().length);
+        for (int i = 0; i < expectedColumns; i++) {
+            assertEquals(expectedRows, m.getElements()[i].length);
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideExpectedElementsInGoalMetaverse")
+    void getGoalMegaverse_shouldMapAllElemetTypes(int row, int column, Element expectedElement) {
+        // arrange
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId + "/goal")).thenReturn(getGoalMegaverseMockHttpResponse());
+
+        // act
+        Megaverse m = repository.getGoalMegaverse();
+
+        // assert
+        assertEquals(expectedElement, m.getElements()[row][column]);
+    }
+
+    private static Stream<Arguments> provideExpectedElementsInGoalMetaverse() {
+        return Stream.of(
+                Arguments.of(0,0, new Cometh(Cometh.Direction.DOWN)),
+                Arguments.of(0,1, null),
+                Arguments.of(0,2, new Polyanet()),
+                Arguments.of(1,0, new Cometh(Cometh.Direction.UP)),
+                Arguments.of(1,1, new Soloon(Soloon.Color.RED)),
+                Arguments.of(1,2, new Polyanet()),
+                Arguments.of(2,2, new Soloon(Soloon.Color.PURPLE))
+        );
+    }
+
+    @Test
+    void getGoalMegaverse_shouldThrowErrorWhenArrayIsNotRegular() {
+        // arrange
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId + "/goal")).thenReturn(getInvalidGoalMegaverseMockHttpResponse());
+
+        // act & assert
+        Exception e = assertThrows(Exception.class, () -> repository.getGoalMegaverse());
+
+        assertEquals("Inconsistent column count at row 2", e.getMessage());
+    }
+
+    private String getGoalMegaverseMockHttpResponse() {
+        return """
+                {
+                    "goal": [
+                        [
+                            "DOWN_COMETH",
+                            "SPACE",
+                            "POLYANET"
+                        ],
+                        [
+                            "UP_COMETH",
+                            "RED_SOLOON",
+                            "POLYANET"
+                        ],
+                        [
+                            "SPACE",
+                            "SPACE",
+                            "PURPLE_SOLOON"
+                        ]
+                    ]
+                }
+                """;
+    }
+
+    private String getInvalidGoalMegaverseMockHttpResponse() {
+        return """
+                {
+                    "goal": [
+                        [
+                            "DOWN_COMETH",
+                            "SPACE",
+                            "POLYANET"
+                        ],
+                        [
+                            "UP_COMETH",
+                            "RED_SOLOON",
+                            "POLYANET"
+                        ],
+                        [
+                            "SPACE",
+                            "SPACE"
+                        ]
+                    ]
+                }
+                """;
     }
 
     private String getCurrentMegaverseHttpMockResponse() {

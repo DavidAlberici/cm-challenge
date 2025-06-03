@@ -1,8 +1,10 @@
 package com.davidalberici.cm_challenge.element;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Cometh extends Element {
     private Direction direction;
     public Cometh(Direction direction) {

@@ -1,4 +1,7 @@
 package com.davidalberici.cm_challenge.element;
 
-public class Element {
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
+public abstract class Element {
 }
