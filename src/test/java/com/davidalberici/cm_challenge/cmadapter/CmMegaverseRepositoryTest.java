@@ -28,7 +28,7 @@ class CmMegaverseRepositoryTest {
     @Test
     void getCurrentMegaverse_shouldKeepArraySize() {
         // arrange
-        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getMockCurrentMegaverseHttpResponse());
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getCurrentMegaverseHttpMockResponse());
 
         // act
         Megaverse m = repository.getCurrentMegaverse();
@@ -45,7 +45,7 @@ class CmMegaverseRepositoryTest {
     @Test
     void getCurrentMegaverse_shouldMapPolyanets() {
         // arrange
-        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getMockCurrentMegaverseHttpResponse());
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getCurrentMegaverseHttpMockResponse());
 
         // act
         Megaverse m = repository.getCurrentMegaverse();
@@ -58,7 +58,7 @@ class CmMegaverseRepositoryTest {
     @Test
     void getCurrentMegaverse_shouldMapSoloons() {
         // arrange
-        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getMockCurrentMegaverseHttpResponse());
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getCurrentMegaverseHttpMockResponse());
 
         // act
         Megaverse m = repository.getCurrentMegaverse();
@@ -73,7 +73,7 @@ class CmMegaverseRepositoryTest {
     @Test
     void getCurrentMegaverse_shouldMapComeths() {
         // arrange
-        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getMockCurrentMegaverseHttpResponse());
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getCurrentMegaverseHttpMockResponse());
 
         // act
         Megaverse m = repository.getCurrentMegaverse();
@@ -85,12 +85,40 @@ class CmMegaverseRepositoryTest {
         assertEquals(Cometh.Direction.LEFT, ((Cometh) m.getElements()[1][4]).getDirection());
     }
 
-    private String getMockCurrentMegaverseHttpResponse() {
+    @Test
+    void getCurrentMegaverse_shouldThrowErrorWhenArrayIsNotRegular() {
+        // arrange
+        when(httpClient.get("https://challenge.crossmint.com/api/map/" + candidateId)).thenReturn(getInvalidCurrentMegaverseMockHttpResponse());
+
+        // act & assert
+        Exception e = assertThrows(Exception.class, () -> repository.getCurrentMegaverse());
+
+        assertEquals("Inconsistent column count at row 1", e.getMessage());
+    }
+
+    private String getCurrentMegaverseHttpMockResponse() {
         return """
                 {
                     "map":{"_id":"68272737eaa8c821866f2a9e",
                     "content":[
                         [{"type":0},null,null,null,null,null,null,null],
+                        [null,null,null,{"type":2,"direction":"up"},{"type":2,"direction":"left"},{"type":2,"direction":"down"},{"type":2,"direction":"right"},null],
+                        [null,{"type":0},null,null,null,null,null,null],
+                        [{"type":1,"color":"red"},{"type":1,"color":"blue"},{"type":1,"color":"purple"},{"type":1,"color":"white"},null,null,null,null],
+                        [null,null,null,null,null,null,null,null],
+                        [null,null,null,null,null,null,null,null]
+                    ],
+                    "candidateId":"b2f8b8be-5953-4d4a-a43d-6752db2b7088","phase":2,"__v":0}
+                }
+                """;
+    }
+
+    private String getInvalidCurrentMegaverseMockHttpResponse() {
+        return """
+                {
+                    "map":{"_id":"68272737eaa8c821866f2a9e",
+                    "content":[
+                        [{"type":0},null,null,null,null,null,null],
                         [null,null,null,{"type":2,"direction":"up"},{"type":2,"direction":"left"},{"type":2,"direction":"down"},{"type":2,"direction":"right"},null],
                         [null,{"type":0},null,null,null,null,null,null],
                         [{"type":1,"color":"red"},{"type":1,"color":"blue"},{"type":1,"color":"purple"},{"type":1,"color":"white"},null,null,null,null],
