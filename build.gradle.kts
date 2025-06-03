@@ -29,5 +29,13 @@ dependencies {
 }
 
 tasks.test {
+    // this removes a mockito error message about deprecation, I need to investigate further
+    doFirst {
+        val mockitoCoreJar = configurations.testRuntimeClasspath.get()
+                .find { it.name.contains("mockito-core") }
+                ?.absolutePath
+                ?: throw GradleException("mockito-core JAR not found in testRuntimeClasspath")
+        jvmArgs("-javaagent:$mockitoCoreJar", "-Xshare:off")
+    }
     useJUnitPlatform()
 }
