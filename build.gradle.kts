@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("application")
 }
 
 group = "org.example"
@@ -38,4 +39,10 @@ tasks.test {
         jvmArgs("-javaagent:$mockitoCoreJar", "-Xshare:off")
     }
     useJUnitPlatform()
+}
+
+application {
+    mainClass.set("com.davidalberici.cm_challenge.Main")
+    // Name used for the launch scripts installDist generates
+    applicationName = "cm-challenge"
 }

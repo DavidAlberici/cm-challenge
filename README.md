@@ -5,6 +5,10 @@
 Just a plain Java app. Run it from the command line and you will get the usage instructions, 
 that is a list of commands to interact with the Megaverse.
 
+Another option is to use docker:
+1. From the root folder run `docker build -t cm-challenge .`, to build the image
+2. Run `docker run --rm -it cm-challenge`, to run the container and start the app
+
 ## Comments
 
 This was quite a fun challenge. And I appreciate not having a specific time limit (I ended up using about 7 hours).
