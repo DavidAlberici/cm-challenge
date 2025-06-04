@@ -44,8 +44,8 @@ public class CmMegaverseWriterRepository implements MegaverseWriterRepository {
         String url = "https://challenge.crossmint.io/api/soloons";
 
         String jsonBody = String.format(
-                "{\"row\":%d,\"column\":%d,\"candidateId\":\"%s\"}",
-                row, column, candidateId
+                "{\"row\":%d,\"column\":%d,\"color\":\"%s\",\"candidateId\":\"%s\"}",
+                row, column, color.toString().toLowerCase(), candidateId
         );
 
         httpClient.post(url, jsonBody);
@@ -68,8 +68,8 @@ public class CmMegaverseWriterRepository implements MegaverseWriterRepository {
         String url = "https://challenge.crossmint.io/api/comeths";
 
         String jsonBody = String.format(
-                "{\"row\":%d,\"column\":%d,\"candidateId\":\"%s\"}",
-                row, column, candidateId
+                "{\"row\":%d,\"column\":%d,\"direction\":\"%s\",\"candidateId\":\"%s\"}",
+                row, column, direction.toString().toLowerCase(), candidateId
         );
 
         httpClient.post(url, jsonBody);
