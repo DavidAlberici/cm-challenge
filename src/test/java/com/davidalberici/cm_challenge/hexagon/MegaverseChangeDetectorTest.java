@@ -4,7 +4,6 @@ import com.davidalberici.cm_challenge.hexagon.element.Cometh;
 import com.davidalberici.cm_challenge.hexagon.element.Element;
 import com.davidalberici.cm_challenge.hexagon.element.Polyanet;
 import com.davidalberici.cm_challenge.hexagon.element.Soloon;
-import com.davidalberici.cm_challenge.port.MegaverseReaderRepository;
 import com.davidalberici.cm_challenge.port.MegaverseWriterRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,22 +16,19 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class MegaverseChangeDetectorTest {
 
-    private MegaverseReaderRepository readerRepo;
     private MegaverseWriterRepository writerRepo;
     private MegaverseChangeDetector changeDetector;
 
     @BeforeEach
     void setUp() {
-        readerRepo = mock(MegaverseReaderRepository.class);
         writerRepo = mock(MegaverseWriterRepository.class);
-        changeDetector = new MegaverseChangeDetector(writerRepo, readerRepo);
+        changeDetector = new MegaverseChangeDetector(writerRepo);
     }
     @Test
-    void detectRequiredChanges_shouldFailWhenMegaversesDoNotHaveSameNumberOfRows() {
+    void detectChanges_shouldFailWhenMegaversesDoNotHaveSameNumberOfRows() {
         // arrange
         Element[][] newElements = new Element[3][3];
         Element[][] oldElements = new Element[2][3]; // different number of rows
@@ -40,14 +36,12 @@ class MegaverseChangeDetectorTest {
         Megaverse newMegaverse = new Megaverse(newElements);
         Megaverse oldMegaverse = new Megaverse(oldElements);
 
-        when(readerRepo.getCurrentMegaverse()).thenReturn(oldMegaverse);
-
         // act & assert
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> changeDetector.detectRequiredChanges(newMegaverse));
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> changeDetector.detectChanges(newMegaverse, oldMegaverse));
         assertTrue(ex.getMessage().contains("Both megaverses must have the same number of rows."));
     }
     @Test
-    void detectRequiredChanges_shouldFailWhenMegaversesDoNotHaveSameNumberOfColumns() {
+    void detectChanges_shouldFailWhenMegaversesDoNotHaveSameNumberOfColumns() {
         // arrange
         Element[][] newElements = new Element[3][3];
         Element[][] oldElements = new Element[3][2]; // different number of rows
@@ -55,25 +49,22 @@ class MegaverseChangeDetectorTest {
         Megaverse newMegaverse = new Megaverse(newElements);
         Megaverse oldMegaverse = new Megaverse(oldElements);
 
-        when(readerRepo.getCurrentMegaverse()).thenReturn(oldMegaverse);
-
         // act & assert
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> changeDetector.detectRequiredChanges(newMegaverse));
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> changeDetector.detectChanges(newMegaverse, oldMegaverse));
         assertTrue(ex.getMessage().contains("Both megaverses must have the same number of columns."));
     }
 
     @ParameterizedTest
     @MethodSource("megaverseChangeCases")
-    void detectRequiredChanges_shouldCorrectlyDetectTheNumberOfChanges(
+    void detectChanges_shouldCorrectlyDetectTheNumberOfChanges(
             Element[][] newElements,
             Element[][] oldElements,
             int expectedChanges
     ) {
         Megaverse newMegaverse = new Megaverse(newElements);
         Megaverse oldMegaverse = new Megaverse(oldElements);
-        when(readerRepo.getCurrentMegaverse()).thenReturn(oldMegaverse);
 
-        List<Runnable> changes = changeDetector.detectRequiredChanges(newMegaverse);
+        List<Runnable> changes = changeDetector.detectChanges(newMegaverse, oldMegaverse);
 
         assertEquals(expectedChanges, changes.size(), "Unexpected number of changes detected.");
     }

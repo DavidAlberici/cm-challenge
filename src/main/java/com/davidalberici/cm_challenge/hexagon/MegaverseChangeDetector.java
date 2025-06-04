@@ -4,7 +4,6 @@ import com.davidalberici.cm_challenge.hexagon.element.Cometh;
 import com.davidalberici.cm_challenge.hexagon.element.Element;
 import com.davidalberici.cm_challenge.hexagon.element.Polyanet;
 import com.davidalberici.cm_challenge.hexagon.element.Soloon;
-import com.davidalberici.cm_challenge.port.MegaverseReaderRepository;
 import com.davidalberici.cm_challenge.port.MegaverseWriterRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +15,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class MegaverseChangeDetector {
     private final MegaverseWriterRepository megaverseWriterRepository;
-    private final MegaverseReaderRepository megaverseReaderRepository;
 
-    public List<Runnable> detectRequiredChanges(Megaverse newMg) {
-        Megaverse oldMg = megaverseReaderRepository.getCurrentMegaverse();
+    public List<Runnable> detectChanges(Megaverse newMg, Megaverse oldMg) {
         checkBothMegaversesHaveTheSameSize(newMg, oldMg);
 
         List<Runnable> changes = new ArrayList<>();
