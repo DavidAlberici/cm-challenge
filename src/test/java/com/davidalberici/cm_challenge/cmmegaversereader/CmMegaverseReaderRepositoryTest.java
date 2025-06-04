@@ -1,10 +1,12 @@
-package com.davidalberici.cm_challenge.cmadapter;
+package com.davidalberici.cm_challenge.cmmegaversereader;
 
-import com.davidalberici.cm_challenge.Megaverse;
-import com.davidalberici.cm_challenge.element.Cometh;
-import com.davidalberici.cm_challenge.element.Element;
-import com.davidalberici.cm_challenge.element.Polyanet;
-import com.davidalberici.cm_challenge.element.Soloon;
+import com.davidalberici.cm_challenge.hexagon.Megaverse;
+import com.davidalberici.cm_challenge.adapter.cmmegaversereader.CmMegaverseReaderRepository;
+import com.davidalberici.cm_challenge.port.HttpClient;
+import com.davidalberici.cm_challenge.hexagon.element.Cometh;
+import com.davidalberici.cm_challenge.hexagon.element.Element;
+import com.davidalberici.cm_challenge.hexagon.element.Polyanet;
+import com.davidalberici.cm_challenge.hexagon.element.Soloon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,18 +19,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class CmMegaverseRepositoryTest {
+class CmMegaverseReaderRepositoryTest {
 
     private HttpClient httpClient;
     private String candidateId;
 
-    private CmMegaverseRepository repository;
+    private CmMegaverseReaderRepository repository;
 
     @BeforeEach
     void setUp() {
         httpClient = mock(HttpClient.class);
         candidateId = "any-id-will-work-here";
-        repository = new CmMegaverseRepository(httpClient, candidateId);
+        repository = new CmMegaverseReaderRepository(httpClient, candidateId);
     }
 
     @Test

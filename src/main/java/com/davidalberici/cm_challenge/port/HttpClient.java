@@ -1,4 +1,4 @@
-package com.davidalberici.cm_challenge.cmadapter;
+package com.davidalberici.cm_challenge.port;
 
 public interface HttpClient {
     String get(String url);

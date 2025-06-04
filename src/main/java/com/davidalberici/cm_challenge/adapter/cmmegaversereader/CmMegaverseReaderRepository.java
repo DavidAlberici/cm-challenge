@@ -1,11 +1,12 @@
-package com.davidalberici.cm_challenge.cmadapter;
+package com.davidalberici.cm_challenge.adapter.cmmegaversereader;
 
-import com.davidalberici.cm_challenge.Megaverse;
-import com.davidalberici.cm_challenge.MegaverseRepository;
-import com.davidalberici.cm_challenge.element.Cometh;
-import com.davidalberici.cm_challenge.element.Element;
-import com.davidalberici.cm_challenge.element.Polyanet;
-import com.davidalberici.cm_challenge.element.Soloon;
+import com.davidalberici.cm_challenge.port.HttpClient;
+import com.davidalberici.cm_challenge.hexagon.Megaverse;
+import com.davidalberici.cm_challenge.port.MegaverseReaderRepository;
+import com.davidalberici.cm_challenge.hexagon.element.Cometh;
+import com.davidalberici.cm_challenge.hexagon.element.Element;
+import com.davidalberici.cm_challenge.hexagon.element.Polyanet;
+import com.davidalberici.cm_challenge.hexagon.element.Soloon;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class CmMegaverseRepository implements MegaverseRepository {
+public class CmMegaverseReaderRepository implements MegaverseReaderRepository {
     // I am intentionally assuming objectMapper as part of the implementation, I am prioritizing speed of development over flexibility here.
     // Besides speed, I am doing it because you can already see I know how dependency injection works, by looking at HttpClient injection!
     // In a real project (if it was deemed worth it) I would have injected this dependency as well

@@ -1,8 +1,8 @@
-package com.davidalberici.cm_challenge;
+package com.davidalberici.cm_challenge.hexagon;
 
-import com.davidalberici.cm_challenge.element.Element;
-import com.davidalberici.cm_challenge.element.Polyanet;
-import com.davidalberici.cm_challenge.element.Soloon;
+import com.davidalberici.cm_challenge.hexagon.element.Element;
+import com.davidalberici.cm_challenge.hexagon.element.Polyanet;
+import com.davidalberici.cm_challenge.hexagon.element.Soloon;
 import lombok.Getter;
 
 @Getter

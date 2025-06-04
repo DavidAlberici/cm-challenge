@@ -1,4 +1,4 @@
-package com.davidalberici.cm_challenge.element;
+package com.davidalberici.cm_challenge.hexagon.element;
 
 import lombok.EqualsAndHashCode;
 

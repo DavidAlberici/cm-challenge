@@ -1,4 +1,4 @@
-package com.davidalberici.cm_challenge.cmadapter;
+package com.davidalberici.cm_challenge.adapter.cmmegaversereader;
 
 public enum CmGoalElement {
     SPACE,
