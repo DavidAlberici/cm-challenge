@@ -24,6 +24,7 @@ public class HexagonApi {
         Megaverse goalMegaverse = megaverseReaderRepository.getGoalMegaverse();
 
         List<Runnable> changes = megaverseChangeDetector.detectChanges(goalMegaverse, currentMegaverse);
+        System.out.println("Detected " + changes.size() + " changes to apply to the megaverse.");
         megaverseChangeExecutor.execute(changes);
     }
 
@@ -33,6 +34,7 @@ public class HexagonApi {
         newMegaverse.reset();
 
         List<Runnable> changes = megaverseChangeDetector.detectChanges(newMegaverse, currentMegaverse);
+        System.out.println("Detected " + changes.size() + " changes to apply to the megaverse.");
         megaverseChangeExecutor.execute(changes);
     }
 }

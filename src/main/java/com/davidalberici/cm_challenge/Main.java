@@ -38,14 +38,24 @@ public class Main {
                             exit -> shuts down the program
                     """);
             case "exit" -> System.out.println("Shutting down... See you next time");
-            case "reset-megaverse" -> SimpleDependencyInjection.hexagonApi.resetMegaverse();
-            case "build-megaverse" -> SimpleDependencyInjection.hexagonApi.buildMegaverse();
+            case "reset-megaverse" -> resetMegaverse();
+            case "build-megaverse" -> getBuildMegaverse();
             case "check-current-megaverse-validity" -> printCurrentMegaverseValidity();
             case "print-current-megaverse" -> printCurrentMegaverse();
             case "print-goal-megaverse" -> printGoalMegaverse();
             default -> System.out.println(
                     "Invalid command: '" + nextCommand + "'. Type 'help' for a list of valid commands");
         }
+    }
+
+    private static void getBuildMegaverse() {
+        SimpleDependencyInjection.hexagonApi.buildMegaverse();
+        System.out.println("Successfully built megaverse.");
+    }
+
+    private static void resetMegaverse() {
+        SimpleDependencyInjection.hexagonApi.resetMegaverse();
+        System.out.println("Successfully resetted megaverse.");
     }
 
     private static void printCurrentMegaverseValidity() {
