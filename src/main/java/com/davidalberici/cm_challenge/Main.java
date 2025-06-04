@@ -34,16 +34,28 @@ public class Main {
                             build-megaverse -> looks at your current goal, and builds the megaverse accordingly
                             print-current-megaverse -> prints the current megaverse in the console
                             print-goal-megaverse -> prints the goal megaverse in the console
+                            check-current-megaverse-validity -> tells you if the current megaverse is valid or not
                             exit -> shuts down the program
                     """);
             case "exit" -> System.out.println("Shutting down... See you next time");
             case "reset-megaverse" -> System.out.println("Not yet implemented");
             case "build-megaverse" -> System.out.println("Not yet implemented");
+            case "check-current-megaverse-validity" -> printCurrentMegaverseValidity();
             case "print-current-megaverse" -> printCurrentMegaverse();
             case "print-goal-megaverse" -> printGoalMegaverse();
             default -> System.out.println(
                     "Invalid command: '" + nextCommand + "'. Type 'help' for a list of valid commands");
         }
+    }
+
+    private static void printCurrentMegaverseValidity() {
+        try {
+            SimpleDependencyInjection.hexagonApi.getCurrentMegaverse().checkIsValid();
+        } catch (Exception e) {
+            System.out.println("Current megaverse is invalid: " + e.getMessage());
+            return;
+        }
+        System.out.println("Current megaverse is valid.");
     }
 
     private static void printCurrentMegaverse() {
