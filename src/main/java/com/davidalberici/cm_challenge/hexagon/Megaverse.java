@@ -5,6 +5,8 @@ import com.davidalberici.cm_challenge.hexagon.element.Polyanet;
 import com.davidalberici.cm_challenge.hexagon.element.Soloon;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 public class Megaverse {
     private final Element[][] elements;
