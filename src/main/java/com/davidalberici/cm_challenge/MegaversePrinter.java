@@ -24,7 +24,7 @@ public class MegaversePrinter {
             for (int col = 0; col < megaverse.getElements()[row].length; col++) {
                 Element e = megaverse.getElements()[row][col];
                 if (e == null) {
-                    System.out.print("o  ");
+                    System.out.print("   ");
                 } else if (e instanceof Polyanet){
                     System.out.print("PO ");
                 } else if (e instanceof Soloon soloon) {
