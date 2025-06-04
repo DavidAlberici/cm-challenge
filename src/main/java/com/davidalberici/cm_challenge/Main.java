@@ -16,7 +16,7 @@ public class Main {
                 "Great, we now have the candidate id ("+candidateId+"), now, what do you want to do?\n" +
                         "Type 'help' for a list of commands, or 'exit' to finish");
 
-        String nextCommand = null;
+        String nextCommand;
         Scanner input = new Scanner(System.in);
         do {
             nextCommand = input.next();
@@ -27,22 +27,22 @@ public class Main {
 
     private static void handleNextCommand(String nextCommand) {
         switch (nextCommand) {
-            case "help" -> System.out.println("""
+            case "help", "h" -> System.out.println("""
                         Commands:
-                            help -> shows this list, a summary of all commands
-                            reset-megaverse -> deletes everything from the current megaverse
-                            build-megaverse -> looks at your current goal, and builds the megaverse accordingly
-                            print-current-megaverse -> prints the current megaverse in the console
-                            print-goal-megaverse -> prints the goal megaverse in the console
-                            check-current-megaverse-validity -> tells you if the current megaverse is valid or not
-                            exit -> shuts down the program
+                            help or h -> shows this list, a summary of all commands
+                            reset-megaverse | rm -> deletes everything from the current megaverse
+                            build-megaverse | bm -> looks at your current goal, and builds the megaverse accordingly
+                            print-current-megaverse | pcm -> prints the current megaverse in the console
+                            print-goal-megaverse | pgm -> prints the goal megaverse in the console
+                            check-megaverse-validity | cmv -> tells you if the current megaverse is valid or not
+                            exit | e -> shuts down the program
                     """);
-            case "exit" -> System.out.println("Shutting down... See you next time");
-            case "reset-megaverse" -> resetMegaverse();
-            case "build-megaverse" -> getBuildMegaverse();
-            case "check-current-megaverse-validity" -> printCurrentMegaverseValidity();
-            case "print-current-megaverse" -> printCurrentMegaverse();
-            case "print-goal-megaverse" -> printGoalMegaverse();
+            case "exit", "e" -> System.out.println("Shutting down... See you next time");
+            case "reset-megaverse", "rm" -> resetMegaverse();
+            case "build-megaverse", "bm" -> getBuildMegaverse();
+            case "check-megaverse-validity", "cmv" -> printCurrentMegaverseValidity();
+            case "print-current-megaverse", "pcm" -> printCurrentMegaverse();
+            case "print-goal-megaverse", "pgm" -> printGoalMegaverse();
             default -> System.out.println(
                     "Invalid command: '" + nextCommand + "'. Type 'help' for a list of valid commands");
         }
