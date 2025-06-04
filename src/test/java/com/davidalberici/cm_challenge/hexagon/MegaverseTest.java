@@ -30,4 +30,29 @@ class MegaverseTest {
         RuntimeException exception = assertThrows(RuntimeException.class, megaverse::checkIsValid);
         assertTrue(exception.getMessage().contains("Invalid Megaverse"));
     }
+    @Test
+    void reset_shouldWork() {
+        Element[][] elements = new Element[2][2];
+        elements[0][0] = new Polyanet();
+        elements[1][1] = new Soloon(Soloon.Color.BLUE);
+
+        Megaverse megaverse = new Megaverse(elements);
+        megaverse.reset();
+
+        for (Element[] row : megaverse.getElements()) {
+            for (Element e : row) {
+                assertNull(e, "Expected all elements to be null after reset");
+            }
+        }
+    }
+
+    @Test
+    void constructor_shouldThrowExceptionWhenArraySizeIsWrong() {
+        Element[][] elements = new Element[2][];
+        elements[0] = new Element[3];
+        elements[1] = new Element[2]; // different length
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> new Megaverse(elements));
+        assertTrue(exception.getMessage().contains("Row length mismatch"), "Expected row length mismatch message");
+    }
 }
