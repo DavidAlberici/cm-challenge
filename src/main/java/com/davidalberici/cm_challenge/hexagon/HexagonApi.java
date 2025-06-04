@@ -2,10 +2,12 @@ package com.davidalberici.cm_challenge.hexagon;
 
 import com.davidalberici.cm_challenge.port.MegaverseReaderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Slf4j
 public class HexagonApi {
 
     private final MegaverseReaderRepository megaverseReaderRepository;
@@ -23,9 +25,7 @@ public class HexagonApi {
         Megaverse currentMegaverse = megaverseReaderRepository.getCurrentMegaverse();
         Megaverse goalMegaverse = megaverseReaderRepository.getGoalMegaverse();
 
-        List<Runnable> changes = megaverseChangeDetector.detectChanges(goalMegaverse, currentMegaverse);
-        System.out.println("Detected " + changes.size() + " changes to apply to the megaverse.");
-        megaverseChangeExecutor.execute(changes);
+        applyMegaverseChanges(goalMegaverse, currentMegaverse);
     }
 
     public void resetMegaverse() {
@@ -33,8 +33,12 @@ public class HexagonApi {
         Megaverse newMegaverse = currentMegaverse.clone();
         newMegaverse.reset();
 
-        List<Runnable> changes = megaverseChangeDetector.detectChanges(newMegaverse, currentMegaverse);
-        System.out.println("Detected " + changes.size() + " changes to apply to the megaverse.");
+        applyMegaverseChanges(newMegaverse, currentMegaverse);
+    }
+
+    private void applyMegaverseChanges(Megaverse newMegaverse, Megaverse oldMegaverse) {
+        List<Runnable> changes = megaverseChangeDetector.detectChanges(newMegaverse, oldMegaverse);
+        log.info("Detected " + changes.size() + " changes to apply to the megaverse.");
         megaverseChangeExecutor.execute(changes);
     }
 }
