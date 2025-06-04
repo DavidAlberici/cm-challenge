@@ -27,6 +27,10 @@ dependencies {
     // mockito
     testImplementation("org.mockito:mockito-core:2.1.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.18.0")
+
+    //slf4j
+    implementation("org.slf4j:slf4j-api:2.0.17")
+    runtimeOnly("org.slf4j:slf4j-simple:2.0.17")
 }
 
 tasks.test {
