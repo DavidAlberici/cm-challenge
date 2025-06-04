@@ -28,6 +28,14 @@ public class Megaverse {
         }
     }
 
+    public Megaverse clone() {
+        Element[][] clonedElements = new Element[elements.length][];
+        for (int i = 0; i < elements.length; i++) {
+            clonedElements[i] = Arrays.copyOf(elements[i], elements[i].length);
+        }
+        return new Megaverse(clonedElements);
+    }
+
     public void reset() {
         for (Element[] element : elements) {
             Arrays.fill(element, null);
