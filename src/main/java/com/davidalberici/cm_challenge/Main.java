@@ -38,8 +38,8 @@ public class Main {
                             exit -> shuts down the program
                     """);
             case "exit" -> System.out.println("Shutting down... See you next time");
-            case "reset-megaverse" -> System.out.println("Not yet implemented");
-            case "build-megaverse" -> System.out.println("Not yet implemented");
+            case "reset-megaverse" -> SimpleDependencyInjection.hexagonApi.resetMegaverse();
+            case "build-megaverse" -> SimpleDependencyInjection.hexagonApi.buildMegaverse();
             case "check-current-megaverse-validity" -> printCurrentMegaverseValidity();
             case "print-current-megaverse" -> printCurrentMegaverse();
             case "print-goal-megaverse" -> printGoalMegaverse();
